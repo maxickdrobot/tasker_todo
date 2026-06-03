@@ -50,9 +50,10 @@ class App extends StatelessWidget {
             height: 1,
           ),
           bodySmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          titleSmall: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ),
-      home: const HomePage(),
+      home: HomePage(),
     );
   }
 }

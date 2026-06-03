@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:tasker_todo/providers/task_provider.dart';
+import 'package:tasker_todo/widgets/add_task_sheet.dart';
+import 'package:tasker_todo/widgets/task_item.dart';
+import 'package:tasker_todo/widgets/list_card.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  bool isChecked = false;
   @override
   Widget build(BuildContext context) {
-    var colors = Theme.of(context).colorScheme;
+    final taskProvider = context.watch<TaskProvider>();
+    final tasks = taskProvider.tasks;
+    final lists = taskProvider.lists;
     var text = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.only(left: 50),
+        title: const Padding(
+          padding: EdgeInsets.only(left: 50),
           child: Text("Today"),
         ),
         actions: [
@@ -29,230 +30,52 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: SafeArea(
-        child: Center(
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              Card(
-                margin: EdgeInsets.all(0),
-                elevation: 0,
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      isChecked = !isChecked;
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(
-                      16,
-                    ).copyWith(bottom: 0, right: 0),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 18),
-                          child: Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: isChecked
-                                    ? colors.primary
-                                    : const Color.fromARGB(51, 0, 0, 0),
-                                width: 2,
-                              ),
-                              shape: BoxShape.circle,
-                              color: isChecked
-                                  ? colors.primary
-                                  : Colors.transparent,
-                            ),
-                            child: isChecked
-                                ? const Icon(
-                                    Icons.check,
-                                    size: 18,
-                                    color: Colors.white,
-                                  )
-                                : null,
-                          ),
-                        ),
+              if (tasks.isNotEmpty)
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: tasks.length,
+                  itemBuilder: (ctx, i) => TaskItem(task: tasks[i]),
+                ),
 
-                        const SizedBox(width: 16),
-
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Start making a presentation",
-                                          style: text.bodyMedium?.copyWith(
-                                            color: Color.fromARGB(
-                                              isChecked ? 127 : 255,
-                                              0,
-                                              0,
-                                              0,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 5),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color.fromARGB(255, 97, 222, 164),
-                                    ),
-                                  ),
-                                  SizedBox(width: 16),
-                                ],
-                              ),
-                              const SizedBox(height: 18),
-
-                              const Divider(
-                                color: Color.fromARGB(25, 37, 42, 49),
-                                thickness: 1,
-                                height: 1,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+              if (tasks.isEmpty)
+                const Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: Center(
+                    child: Text(
+                      'No tasks yet.\nTap + to add a task',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
                   ),
                 ),
-              ),
-              Card(
-                margin: EdgeInsets.all(0),
-                elevation: 0,
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      isChecked = !isChecked;
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(
-                      16,
-                    ).copyWith(bottom: 0, right: 0),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 18),
-                          child: Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: isChecked
-                                    ? colors.primary
-                                    : const Color.fromARGB(51, 0, 0, 0),
-                                width: 2,
-                              ),
-                              shape: BoxShape.circle,
-                              color: isChecked
-                                  ? colors.primary
-                                  : Colors.transparent,
-                            ),
-                            child: isChecked
-                                ? const Icon(
-                                    Icons.check,
-                                    size: 18,
-                                    color: Colors.white,
-                                  )
-                                : null,
-                          ),
-                        ),
 
-                        const SizedBox(width: 16),
-
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Pay for rent",
-                                          style: text.bodyMedium?.copyWith(
-                                            color: Color.fromARGB(
-                                              isChecked ? 127 : 255,
-                                              0,
-                                              0,
-                                              0,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            SvgPicture.asset(
-                                              "assets/icons/Alarm.svg",
-                                              width: 16,
-                                              colorFilter: ColorFilter.mode(
-                                                Color.fromARGB(
-                                                  isChecked ? 38 : 51,
-                                                  0,
-                                                  0,
-                                                  0,
-                                                ),
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              "7:00 pm",
-                                              style: text.bodySmall?.copyWith(
-                                                color: Color.fromARGB(
-                                                  isChecked ? 38 : 51,
-                                                  0,
-                                                  0,
-                                                  0,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color.fromARGB(255, 182, 120, 255),
-                                    ),
-                                  ),
-                                  SizedBox(width: 16),
-                                ],
-                              ),
-                              const SizedBox(height: 18),
-
-                              const Divider(
-                                color: Color.fromARGB(25, 37, 42, 49),
-                                thickness: 1,
-                                height: 1,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(60, 32, 16, 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Lists",
+                      style: text.titleSmall?.copyWith(
+                        color: const Color.fromARGB(51, 37, 42, 49),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 15),
+
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: lists.length,
+                      itemBuilder: (ctx, i) => Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: ListCard(taskList: lists[i]),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -262,11 +85,21 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            _showAddTaskSheet(context);
+          },
           tooltip: 'Add',
           child: SvgPicture.asset('assets/icons/Plus.svg', width: 24),
         ),
       ),
+    );
+  }
+
+  void _showAddTaskSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => const AddTaskSheet(),
     );
   }
 }
